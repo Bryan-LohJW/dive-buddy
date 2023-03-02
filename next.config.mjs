@@ -5,6 +5,9 @@
  * This is especially useful for Docker builds.
  */
 !process.env.SKIP_ENV_VALIDATION && (await import("./src/env.mjs"));
+import nextPwa from "next-pwa";
+
+const withPwa = nextPwa({ dest: "public" });
 
 /** @type {import("next").NextConfig} */
 const config = {
@@ -21,4 +24,4 @@ const config = {
     defaultLocale: "en",
   },
 };
-export default config;
+export default withPwa(config);
