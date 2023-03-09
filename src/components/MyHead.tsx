@@ -4,71 +4,55 @@ import { type FC } from "react";
 const MyHead: FC = ({}) => {
   return (
     <Head>
-      <title>Dive Buddy</title>
-      <meta name="description" content="Dive Buddy" />
-      <link rel="icon" href="/favicon.ico" />
+      <title>Freedive Buddy</title>
+      <meta name="description" content="Freedive Buddy" />
+      <link rel="icon" href="/assets/icons/favicon.ico" />
       <meta name="application-name" content="PWA App" />
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-      <meta name="apple-mobile-web-app-title" content="PWA App" />
-      <meta name="description" content="Best PWA App in the world" />
+      <meta name="apple-mobile-web-app-title" content="Freedive Buddy" />
+      <meta name="description" content="Freedive Buddy" />
       <meta name="format-detection" content="telephone=no" />
       <meta name="mobile-web-app-capable" content="yes" />
       <meta name="msapplication-config" content="/icons/browserconfig.xml" />
-      <meta name="msapplication-TileColor" content="#2B5797" />
+      <meta name="msapplication-TileColor" content="#F4819F" />
       <meta name="msapplication-tap-highlight" content="no" />
-      <meta name="theme-color" content="#000000" />
+      <meta name="theme-color" content="#F4819F" />
 
-      <link rel="apple-touch-icon" href="/icons/touch-icon-iphone.png" />
-      <link
-        rel="apple-touch-icon"
-        sizes="152x152"
-        href="/icons/touch-icon-ipad.png"
-      />
-      <link
-        rel="apple-touch-icon"
-        sizes="180x180"
-        href="/icons/touch-icon-iphone-retina.png"
-      />
-      <link
-        rel="apple-touch-icon"
-        sizes="167x167"
-        href="/icons/touch-icon-ipad-retina.png"
-      />
-
+      <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png" />
       <link
         rel="icon"
         type="image/png"
         sizes="32x32"
-        href="/icons/favicon-32x32.png"
+        href="/assets/icons/favicon-32x32.png"
       />
       <link
         rel="icon"
         type="image/png"
         sizes="16x16"
-        href="/icons/favicon-16x16.png"
+        href="/assets/icons/favicon-16x16.png"
       />
       <link rel="manifest" href="/manifest.json" />
       <link
         rel="mask-icon"
-        href="/icons/safari-pinned-tab.svg"
-        color="#5bbad5"
+        href="/assets/icons/maskable-icon.png"
+        color="#F4819F"
       />
-      <link rel="shortcut icon" href="/favicon.ico" />
+      <link rel="shortcut icon" href="/assets/icons/favicon.ico" />
 
       <meta name="twitter:card" content="summary" />
       <meta name="twitter:url" content="https://yourdomain.com" />
-      <meta name="twitter:title" content="PWA App" />
-      <meta name="twitter:description" content="Best PWA App in the world" />
-      <meta
+      <meta name="twitter:title" content="Freedive Buddy" />
+      <meta name="twitter:description" content="Freedive Buddy" />
+      {/* <meta
         name="twitter:image"
         content="https://yourdomain.com/icons/android-chrome-192x192.png"
-      />
-      <meta name="twitter:creator" content="@DavidWShadow" />
+      /> */}
+      {/* <meta name="twitter:creator" content="@DavidWShadow" /> */}
       <meta property="og:type" content="website" />
-      <meta property="og:title" content="PWA App" />
-      <meta property="og:description" content="Best PWA App in the world" />
-      <meta property="og:site_name" content="PWA App" />
+      <meta property="og:title" content="Freedive Buddy" />
+      <meta property="og:description" content="Freedive Buddy" />
+      <meta property="og:site_name" content="Freedive Buddy" />
       <meta property="og:url" content="https://yourdomain.com" />
       <meta
         property="og:image"
