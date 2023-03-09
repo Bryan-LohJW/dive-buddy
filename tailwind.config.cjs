@@ -2,7 +2,12 @@
 const config = {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: "#2c3968",
+        secondary: "#F0EAD6",
+      },
+    },
   },
   plugins: [],
 };
