@@ -4,7 +4,6 @@ const config = {
   theme: {
     extend: {
       colors: {
-        secondary: "#F0EAD6",
         primary: {
           DEFAULT: "#F4819F",
           50: "#FDEBEF",
@@ -18,6 +17,7 @@ const config = {
           800: "#680922",
           900: "#180208",
         },
+        secondary: "#F0EAD6",
       },
     },
   },
