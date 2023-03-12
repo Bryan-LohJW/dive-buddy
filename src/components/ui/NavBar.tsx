@@ -30,14 +30,20 @@ const NavItem = ({ title, Icon, pageNo, pageHandler }: NavItemProps) => {
 };
 
 const NavBar = ({ children, page, pageHandler }: NavBarProps) => {
+  const xTransVariants: { [key: number]: string } = {
+    0: "translate-x-0",
+    1: "translate-x-full",
+    2: "translate-x-[200%]",
+  };
+
   return (
     <>
       {children}
       <div className="fixed top-full flex h-16 w-full -translate-y-full justify-between rounded-t-xl bg-primary px-5 align-middle">
         <div
-          className={`absolute -z-10 h-full w-[116.67px] transform translate-x-[${
-            page * 100
-          }%] -translate-y-4 rounded-full bg-primary transition-transform duration-300 ease-in-out`}
+          className={`absolute -z-10 h-full w-[116.67px] ${
+            xTransVariants[page] || "translate-x-full"
+          } -translate-y-4 transform rounded-full bg-primary transition-transform duration-300 ease-in-out`}
         ></div>
         <NavItem
           title="Best"
