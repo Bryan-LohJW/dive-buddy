@@ -39,9 +39,9 @@ const NavBar = ({ children, page, pageHandler }: NavBarProps) => {
   return (
     <>
       {children}
-      <div className="fixed top-full flex h-16 w-full -translate-y-full justify-between rounded-t-xl bg-primary px-5 align-middle">
+      <div className="fixed top-full flex h-20 w-full -translate-y-full justify-between rounded-t-xl bg-primary align-middle">
         <div
-          className={`absolute -z-10 h-full w-[116.67px] ${
+          className={`absolute -z-10 h-full w-1/3 ${
             xTransVariants[page] || "translate-x-full"
           } -translate-y-4 transform rounded-full bg-primary transition-transform duration-300 ease-in-out`}
         ></div>
