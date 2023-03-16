@@ -28,7 +28,7 @@ const Auth = () => {
           className="relative top-2/3 left-1/2 w-72 -translate-y-1/2 -translate-x-1/2"
         />
       </div>
-      <div className="h-96 w-full rounded-3xl bg-primary px-5 pt-10 text-secondary">
+      <div className=" relative z-10 h-96 w-full rounded-3xl bg-primary px-5 pt-5 text-secondary">
         <h1 className="mb-5 text-2xl font-bold">Welcome</h1>
         <p className="mb-5">
           Lacus suspendisse faucibus interdum posuere lorem ipsum dolor sit
@@ -43,7 +43,16 @@ const Auth = () => {
           <Image src={googleSignIn} alt="google icon" />
         </button>
       </div>
-      <div className="animation-test absolute">Hello</div>
+      <div className="relative bottom-1/4 z-0 flex justify-evenly">
+        <div className="h-8 w-8 animate-float1 rounded-full bg-primary"></div>
+        <div className="h-10 w-10 animate-float2 rounded-full bg-primary"></div>
+        <div className="h-12 w-12 animate-float3 rounded-full bg-primary"></div>
+        <div className="h-6 w-6 animate-float4 rounded-full bg-primary"></div>
+        <div className="h-10 w-10 animate-float5 rounded-full bg-primary"></div>
+        <div className="h-13 w-13 animate-float6 rounded-full bg-primary"></div>
+        <div className="h-10 w-10 animate-float1 rounded-full bg-primary"></div>
+        <div className="h-15 w-15 animate-float2 rounded-full bg-primary"></div>
+      </div>
     </div>
   );
 };

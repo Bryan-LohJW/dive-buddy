@@ -19,6 +19,40 @@ const config = {
         },
         secondary: "#F0EAD6",
       },
+      animation: {
+        float1: "float1 6s linear infinite",
+        float2: "float2 9s linear infinite",
+        float3: "float3 12s linear infinite",
+        float4: "float4 7s linear infinite",
+        float5: "float5 10s linear infinite",
+        float6: "float6 8s linear infinite",
+      },
+      keyframes: {
+        float1: {
+          "0%": { transform: "translateY(0vh)" },
+          "100%": { transform: "translate(40px, -100vh)", opacity: "0" },
+        },
+        float2: {
+          "0%": { transform: "translateY(0vh)" },
+          "100%": { transform: "translate(20px, -100vh)", opacity: "0" },
+        },
+        float3: {
+          "0%": { transform: "translateY(0vh)" },
+          "100%": { transform: "translate(-30px, -100vh)", opacity: "0" },
+        },
+        float4: {
+          "0%": { transform: "translateY(0vh)" },
+          "100%": { transform: "translate(-10px, -100vh)", opacity: "0" },
+        },
+        float5: {
+          "0%": { transform: "translateY(0vh)" },
+          "100%": { transform: "translate(-40px, -100vh)", opacity: "0" },
+        },
+        float6: {
+          "0%": { transform: "translateY(0vh)" },
+          "100%": { transform: "translate(30px, -100vh)", opacity: "0" },
+        },
+      },
     },
   },
   plugins: [],
