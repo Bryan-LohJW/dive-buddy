@@ -1,4 +1,6 @@
-import { type FC, type PropsWithChildren, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { type FC, type PropsWithChildren, useState, useEffect } from "react";
 import NavBar from "~/components/ui/NavBar";
 
 const INITIAL_PAGE = 1;
@@ -13,13 +15,22 @@ const PageContent: FC<PropsWithChildren<PageContentProps>> = ({
   page,
   index,
 }) => {
-  return (
-    <main className={`${page === index ? "" : "hidden"}`}>{children}</main>
-  );
+  if (page !== index) return <></>;
+
+  return <main>{children}</main>;
 };
 
 const Home = () => {
   const [page, setPage] = useState(INITIAL_PAGE);
+  const { data: sessionData } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!sessionData) {
+      void router.push("/auth");
+    }
+  }, [sessionData, router]);
+
   const pageHandler = (pageNo: number) => {
     if (page === pageNo) {
       return;
