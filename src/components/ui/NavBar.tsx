@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { type FC, type PropsWithChildren } from "react";
 import { type IconType } from "react-icons/lib";
 import { TbScubaMask, TbHistory, TbAward } from "react-icons/tb";
 
@@ -10,17 +10,26 @@ type NavItemProps = {
 };
 
 type NavBarProps = {
-  children: ReactNode;
   page: number;
   pageHandler: (pageNo: number) => void;
 };
 
-const NavItem = ({ title, Icon, pageNo, pageHandler }: NavItemProps) => {
+const NavItem: FC<PropsWithChildren<NavItemProps>> = ({
+  children,
+  title,
+  Icon,
+  pageNo,
+  pageHandler,
+}) => {
   const onChangePage = () => {
     pageHandler(pageNo);
   };
   return (
-    <div className="flex w-1/3 flex-col justify-center" onClick={onChangePage}>
+    <div
+      className="relative flex flex-1 flex-col justify-center"
+      onClick={onChangePage}
+    >
+      {children}
       <Icon size={36} className="mx-auto text-secondary" />
       <p className="text-center text-sm font-semibold text-secondary">
         {title}
@@ -29,7 +38,7 @@ const NavItem = ({ title, Icon, pageNo, pageHandler }: NavItemProps) => {
   );
 };
 
-const NavBar = ({ children, page, pageHandler }: NavBarProps) => {
+const NavBar: FC<NavBarProps> = ({ page, pageHandler }) => {
   const xTransVariants: { [key: number]: string } = {
     0: "translate-x-0",
     1: "translate-x-full",
@@ -38,19 +47,19 @@ const NavBar = ({ children, page, pageHandler }: NavBarProps) => {
 
   return (
     <>
-      {children}
-      <div className="fixed top-full flex h-20 w-full -translate-y-full justify-between rounded-t-xl bg-primary align-middle">
-        <div
-          className={`absolute -z-10 h-full w-1/3 ${
-            xTransVariants[page] || "translate-x-full"
-          } -translate-y-4 transform rounded-full bg-primary transition-transform duration-300 ease-in-out`}
-        ></div>
+      <div className="fixed top-full flex h-20 w-full -translate-y-full justify-between rounded-t-2xl bg-primary align-middle">
         <NavItem
           title="Best"
           Icon={TbAward}
           pageNo={0}
           pageHandler={pageHandler}
-        />
+        >
+          <div
+            className={`absolute -z-10 h-full w-full ${
+              xTransVariants[page] || "translate-x-full"
+            } -translate-y-4 transform rounded-full bg-primary transition-transform duration-300 ease-in-out`}
+          ></div>
+        </NavItem>
         <NavItem
           title="Training"
           Icon={TbScubaMask}
