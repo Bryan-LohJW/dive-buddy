@@ -1,6 +1,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { type FC, type PropsWithChildren, useState, useEffect } from "react";
+import BestTimer from "~/components/timers/BestTimer";
 import NavBar from "~/components/ui/NavBar";
 
 const INITIAL_PAGE = 1;
@@ -26,7 +27,8 @@ const Home = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!sessionData) {
+    if (false) {
+      // change back when done
       void router.push("/auth");
     }
   }, [sessionData, router]);
@@ -41,7 +43,9 @@ const Home = () => {
   return (
     <>
       <PageContent index={0} page={page}>
-        <p>Best</p>
+        <div>
+          <BestTimer />
+        </div>
       </PageContent>
       <PageContent index={1} page={page}>
         <p>Training</p>

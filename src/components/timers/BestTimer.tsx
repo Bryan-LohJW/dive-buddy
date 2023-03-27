@@ -1,22 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { useEffect, useState } from "react";
-
-type TimingObject = {
-  minutes: string;
-  seconds: string;
-  milliseconds: string;
-};
-
-type Response = {
-  message: string;
-  best: boolean;
-};
+import { api } from "~/utils/api";
 
 const BestTimer = () => {
   const [time, setTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [showProgress, setShowProgress] = useState(true);
   const [clickEffect, setClickEffect] = useState(false);
+
+  const { mutate, isLoading: submittingRecord } =
+    api.record.create.useMutation();
 
   useEffect(() => {
     let interval: string | number | NodeJS.Timeout | undefined;
@@ -41,31 +34,19 @@ const BestTimer = () => {
       60) *
     100;
 
-  const submitTiming = async (timing: TimingObject) => {
-    setIsLoading(true);
-    const response = await fetch("/api/timer/bestTime", {
-      method: "POST",
-      body: JSON.stringify(timing),
-    });
-    if (!response.ok) return undefined;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const result = await response.json();
-    setIsLoading(false);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return result;
-  };
-
   const timerToggleHandler = () => {
     if (isRunning && time > 0) {
-      console.log(minutes, seconds, milliseconds);
-      const timing: TimingObject = {
-        minutes,
-        seconds,
-        milliseconds,
-      };
-      void submitTiming(timing).then((result) => console.log(result));
+      mutate({ milliseconds: time });
+    } else {
+      setTime(0);
     }
     setIsRunning((prev) => !prev);
+  };
+
+  const showProgressToggleHandler = () => {
+    if (isRunning) {
+      setShowProgress((prev) => !prev);
+    }
   };
 
   return (
@@ -78,25 +59,30 @@ const BestTimer = () => {
             a 15.9155 15.9155 0 0 1 0 -31.831"
             className="fill-none stroke-gray-300 stroke-2"
           />
-          <path
-            d="M18 2.0845
+          {showProgress && (
+            <path
+              d="M18 2.0845
             a 15.9155 15.9155 0 0 1 0 31.831
             a 15.9155 15.9155 0 0 1 0 -31.831"
-            stroke-dasharray={`${percentOfMin}, 100`}
-            strokeLinecap="round"
-            className={`fill-none stroke-primary stroke-2 ${
-              percentOfMin === 0
-                ? ""
-                : "transition-all duration-[1.1s] ease-linear"
-            }`}
-          />
+              stroke-dasharray={`${percentOfMin}, 100`}
+              strokeLinecap="round"
+              className={`fill-none stroke-primary stroke-2 ${
+                percentOfMin === 0
+                  ? ""
+                  : "transition-all duration-[1.1s] ease-linear"
+              }`}
+            />
+          )}
           <text
-            x="6.85"
+            x={showProgress ? "5.7" : "5"}
             y="20.35"
             textAnchor="left"
             className="text-[6px] font-semibold"
+            onClick={showProgressToggleHandler}
           >
-            {minutes}:{seconds}:{milliseconds}
+            {showProgress
+              ? `${minutes}:${seconds}:${milliseconds}`
+              : "-- : -- : --"}
           </text>
         </svg>
       </div>
@@ -113,7 +99,7 @@ const BestTimer = () => {
       >
         {isRunning ? "Stop" : "Start"}
       </button>
-      {isLoading && <p>Loading</p>}
+      {submittingRecord && <p>Loading</p>}
     </div>
   );
 };
