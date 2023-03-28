@@ -3,6 +3,8 @@ import { api } from "~/utils/api";
 import dayjs from "dayjs";
 import { type Record } from "@prisma/client";
 import Spinner from "../ui/Spinner";
+import { useQueryClient } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 
 type BestTimerProps = {
   timeInMs: number;
@@ -143,6 +145,8 @@ const PastRecords: FC<PastRecordsProps> = ({ records, loading }) => {
 const Best = () => {
   const [time, setTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
+  const { data: sessionData } = useSession();
+  const queryClient = useQueryClient();
 
   const { mutateAsync: uploadRecord, isLoading: submittingRecord } =
     api.record.create.useMutation();
@@ -174,7 +178,6 @@ const Best = () => {
       setTime(0);
     }
   };
-  console.log(loadingRecords, refetchingRecords, submittingRecord);
   return (
     <>
       <BestTimer

@@ -34,7 +34,7 @@ const Home = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (sessionStatus !== "authenticated") {
+    if (sessionStatus !== "authenticated" && sessionStatus !== "loading") {
       void router.push("/auth");
     }
   }, [sessionStatus, router]);

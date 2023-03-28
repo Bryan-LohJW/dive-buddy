@@ -37,7 +37,9 @@ const Auth = () => {
         <button
           className="w-48"
           onClick={() => {
-            void signIn("google", { callbackUrl: "http://localhost:3000/" });
+            void signIn("google", {
+              callbackUrl: "http://localhost:3000/home",
+            });
           }}
         >
           <Image src={googleSignIn} alt="google icon" />
