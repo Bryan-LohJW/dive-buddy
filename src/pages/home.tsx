@@ -1,7 +1,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { type FC, type PropsWithChildren, useState, useEffect } from "react";
-import BestTimer from "~/components/timers/BestTimer";
+import Best from "~/components/tabs/Best";
 import NavBar from "~/components/ui/NavBar";
 
 const INITIAL_PAGE = 1;
@@ -18,20 +18,26 @@ const PageContent: FC<PropsWithChildren<PageContentProps>> = ({
 }) => {
   if (page !== index) return <></>;
 
-  return <main>{children}</main>;
+  return (
+    <main>
+      <div className="flex h-screen flex-col gap-5">
+        {children}
+        <div className="h-24 flex-shrink-0"></div>
+      </div>
+    </main>
+  );
 };
 
 const Home = () => {
   const [page, setPage] = useState(INITIAL_PAGE);
-  const { data: sessionData } = useSession();
+  const { status: sessionStatus } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    if (false) {
-      // change back when done
+    if (sessionStatus !== "authenticated") {
       void router.push("/auth");
     }
-  }, [sessionData, router]);
+  }, [sessionStatus, router]);
 
   const pageHandler = (pageNo: number) => {
     if (page === pageNo) {
@@ -43,9 +49,7 @@ const Home = () => {
   return (
     <>
       <PageContent index={0} page={page}>
-        <div>
-          <BestTimer />
-        </div>
+        <Best />
       </PageContent>
       <PageContent index={1} page={page}>
         <p>Training</p>

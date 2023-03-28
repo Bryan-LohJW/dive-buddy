@@ -1,10 +1,10 @@
 import { type NextPage } from "next";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
-
 import { api } from "~/utils/api";
+import { useRouter } from "next/router";
+
 import Appbar from "~/components/Appbar";
-import BestTimer from "~/components/timers/BestTimer";
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
@@ -61,6 +61,7 @@ const AuthShowcase: React.FC = () => {
     undefined, // no input
     { enabled: sessionData?.user !== undefined }
   );
+  const router = useRouter();
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
@@ -73,6 +74,14 @@ const AuthShowcase: React.FC = () => {
         onClick={sessionData ? () => void signOut() : () => void signIn()}
       >
         {sessionData ? "Sign out" : "Sign in"}
+      </button>
+      <button
+        className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+        onClick={() => {
+          void router.push("/home");
+        }}
+      >
+        {sessionData ? "Home" : "Home without auth"}
       </button>
     </div>
   );

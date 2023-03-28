@@ -1,22 +1,21 @@
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-
 import {
   createTRPCRouter,
   publicProcedure,
   protectedProcedure,
 } from "~/server/api/trpc";
-import { prisma } from "~/server/db";
 
 export const recordRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.record.findMany();
   }),
-  getByUserId: publicProcedure
-    .input(z.object({ id: z.string() }))
-    .query(({ ctx, input }) => {
-      return ctx.prisma.record.findMany({ where: { id: input.id } });
-    }),
+  getByUserId: protectedProcedure.query(({ ctx }) => {
+    console.log(ctx.session.user);
+    return ctx.prisma.record.findMany({
+      where: { userId: ctx.session.user.id },
+      orderBy: { createdAt: "desc" },
+    });
+  }),
   create: protectedProcedure
     .input(z.object({ milliseconds: z.number() }))
     .mutation(async ({ ctx, input }) => {
