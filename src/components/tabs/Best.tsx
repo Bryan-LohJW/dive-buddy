@@ -1,9 +1,12 @@
 import { type FC, useEffect, useState } from "react";
-import { api } from "~/utils/api";
 import dayjs from "dayjs";
 import RelativeTime from "dayjs/plugin/relativeTime";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import { toast } from "react-hot-toast";
+
+import { api } from "~/utils/api";
 import { type Record } from "@prisma/client";
-import Spinner from "../ui/Spinner";
 
 type BestTimerProps = {
   timeInMs: number;
@@ -25,6 +28,27 @@ const BestTimer: FC<BestTimerProps> = ({
 }) => {
   const [showProgress, setShowProgress] = useState(true);
   const [clickEffect, setClickEffect] = useState(false);
+
+  useEffect(() => {
+    const lastVisit = localStorage.getItem("lastVisit");
+    if (lastVisit === null) {
+      toast("Tap the timer to hide it", {
+        duration: 5000,
+        position: "top-center",
+      });
+    } else {
+      if (
+        new Date().valueOf() - Date.parse(lastVisit).valueOf() >
+        1000 * 60 * 60 * 24 * 5
+      ) {
+        toast("Tap the timer to hide it", {
+          duration: 5000,
+          position: "top-center",
+        });
+      }
+    }
+    localStorage.setItem("lastVisit", new Date().toString());
+  }, []);
 
   const minutes = ("0" + Math.floor((timeInMs / 60000) % 10).toString()).slice(
     -2
@@ -100,54 +124,61 @@ const BestTimer: FC<BestTimerProps> = ({
 };
 
 const PastRecords: FC<PastRecordsProps> = ({ records, loading }) => {
-  if (loading) {
-    return (
-      // want to replace this with skeletal design
-      <div className="mx-auto">
-        <Spinner size={"h-28 w-28"} />
-      </div>
-    );
-  }
-
-  if (!records) return <div className="mx-auto">Something went wrong</div>;
-
   dayjs.extend(RelativeTime);
+
+  if (!records && !loading)
+    return <div className="mx-auto">Something went wrong</div>;
 
   return (
     <div className="mx-3 overflow-y-scroll rounded-md border-2 border-slate-200 bg-slate-100 shadow-md">
-      {records.map((record) => {
-        let displayTime = "";
-        if (
-          Date.now().valueOf() - record.createdAt.valueOf() <
-          1000 * 60 * 60 * 24 * 7
-        ) {
-          displayTime = dayjs(record.createdAt).fromNow();
-        } else {
-          displayTime = dayjs(record.createdAt).format("DD MMM YYYY");
-        }
-
-        const minutes = (
-          "0" + Math.floor((record.milliseconds / 60000) % 10).toString()
-        ).slice(-2);
-        const seconds = (
-          "0" + Math.floor((record.milliseconds / 1000) % 60).toString()
-        ).slice(-2);
-        const milliseconds = (
-          "0" + Math.floor((record.milliseconds / 10) % 100).toString()
-        ).slice(-2);
-
-        return (
-          <div
-            key={record.id}
-            className="flex justify-between border-b-2 border-black py-2 px-6"
-          >
-            <p className="text-lg">
-              {minutes}:{seconds}:{milliseconds}
-            </p>
-            <p className="text-lg">{displayTime}</p>
+      {loading && (
+        <>
+          <div className="border-b-2 border-black py-2 px-6">
+            <Skeleton />
           </div>
-        );
-      })}
+          <div className="border-b-2 border-black py-2 px-6">
+            <Skeleton />
+          </div>
+          <div className="border-b-2 border-black py-2 px-6">
+            <Skeleton />
+          </div>
+        </>
+      )}
+      {!loading &&
+        records &&
+        records.map((record) => {
+          let displayTime = "";
+          if (
+            Date.now().valueOf() - record.createdAt.valueOf() <
+            1000 * 60 * 60 * 24 * 7
+          ) {
+            displayTime = dayjs(record.createdAt).fromNow();
+          } else {
+            displayTime = dayjs(record.createdAt).format("DD MMM YYYY");
+          }
+
+          const minutes = (
+            "0" + Math.floor((record.milliseconds / 60000) % 10).toString()
+          ).slice(-2);
+          const seconds = (
+            "0" + Math.floor((record.milliseconds / 1000) % 60).toString()
+          ).slice(-2);
+          const milliseconds = (
+            "0" + Math.floor((record.milliseconds / 10) % 100).toString()
+          ).slice(-2);
+
+          return (
+            <div
+              key={record.id}
+              className="flex justify-between border-b-2 border-black py-2 px-6"
+            >
+              <p className="text-lg">
+                {minutes}:{seconds}:{milliseconds}
+              </p>
+              <p className="text-lg">{displayTime}</p>
+            </div>
+          );
+        })}
     </div>
   );
 };
