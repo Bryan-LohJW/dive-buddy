@@ -1,16 +1,15 @@
 import { type FC, useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import dayjs from "dayjs";
+import RelativeTime from "dayjs/plugin/relativeTime";
 import { type Record } from "@prisma/client";
 import Spinner from "../ui/Spinner";
-import { useQueryClient } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
 
 type BestTimerProps = {
   timeInMs: number;
   isRunning: boolean;
   loading: boolean;
-  toggleTimerHandler: () => Promise<void>;
+  toggleTimerHandler: () => void;
 };
 
 type PastRecordsProps = {
@@ -44,10 +43,6 @@ const BestTimer: FC<BestTimerProps> = ({
       60) *
     100;
 
-  const showProgressToggleHandler = () => {
-    setShowProgress((prev) => !prev);
-  };
-
   return (
     <div className="text-center">
       <div className="mx-auto my-10 aspect-square h-52">
@@ -73,11 +68,13 @@ const BestTimer: FC<BestTimerProps> = ({
             />
           )}
           <text
-            x={showProgress ? "5.7" : "5"}
+            x={showProgress ? "5.4" : "5"}
             y="20.35"
             textAnchor="left"
             className="text-[6px] font-semibold"
-            onClick={showProgressToggleHandler}
+            onClick={() => {
+              setShowProgress((prev) => !prev);
+            }}
           >
             {showProgress
               ? `${minutes}:${seconds}:${milliseconds}`
@@ -88,11 +85,11 @@ const BestTimer: FC<BestTimerProps> = ({
       <button
         onClick={() => {
           setClickEffect(true);
-          void toggleTimerHandler().then();
+          void toggleTimerHandler();
         }}
         onAnimationEnd={() => setClickEffect(false)}
         disabled={loading}
-        className={`h-14 w-44 rounded-3xl bg-primary text-2xl font-semibold text-secondary ${
+        className={`h-14 w-44 rounded-lg bg-primary text-2xl font-semibold text-secondary ${
           clickEffect ? "animate-shrink" : ""
         }`}
       >
@@ -105,6 +102,7 @@ const BestTimer: FC<BestTimerProps> = ({
 const PastRecords: FC<PastRecordsProps> = ({ records, loading }) => {
   if (loading) {
     return (
+      // want to replace this with skeletal design
       <div className="mx-auto">
         <Spinner size={"h-28 w-28"} />
       </div>
@@ -113,9 +111,21 @@ const PastRecords: FC<PastRecordsProps> = ({ records, loading }) => {
 
   if (!records) return <div className="mx-auto">Something went wrong</div>;
 
+  dayjs.extend(RelativeTime);
+
   return (
-    <div className="mx-3 overflow-y-scroll rounded-md border-2 border-gray-300 bg-gray-300">
+    <div className="mx-3 overflow-y-scroll rounded-md border-2 border-slate-200 bg-slate-100 shadow-md">
       {records.map((record) => {
+        let displayTime = "";
+        if (
+          Date.now().valueOf() - record.createdAt.valueOf() <
+          1000 * 60 * 60 * 24 * 7
+        ) {
+          displayTime = dayjs(record.createdAt).fromNow();
+        } else {
+          displayTime = dayjs(record.createdAt).format("DD MMM YYYY");
+        }
+
         const minutes = (
           "0" + Math.floor((record.milliseconds / 60000) % 10).toString()
         ).slice(-2);
@@ -125,16 +135,16 @@ const PastRecords: FC<PastRecordsProps> = ({ records, loading }) => {
         const milliseconds = (
           "0" + Math.floor((record.milliseconds / 10) % 100).toString()
         ).slice(-2);
-        const date = dayjs(record.createdAt).format("DD/MMM/YYYY");
+
         return (
           <div
             key={record.id}
-            className="flex justify-evenly border-b-2 border-black p-2"
+            className="flex justify-between border-b-2 border-black py-2 px-6"
           >
             <p className="text-lg">
               {minutes}:{seconds}:{milliseconds}
             </p>
-            <p className="text-lg">{date}</p>
+            <p className="text-lg">{displayTime}</p>
           </div>
         );
       })}
@@ -145,18 +155,43 @@ const PastRecords: FC<PastRecordsProps> = ({ records, loading }) => {
 const Best = () => {
   const [time, setTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
-  const { data: sessionData } = useSession();
-  const queryClient = useQueryClient();
 
-  const { mutateAsync: uploadRecord, isLoading: submittingRecord } =
-    api.record.create.useMutation();
+  const utils = api.useContext();
 
-  const {
-    data: records,
-    isLoading: loadingRecords,
-    refetch: reloadRecord,
-    isRefetching: refetchingRecords,
-  } = api.record.getByUserId.useQuery();
+  const { data: records, isLoading: loadingRecords } =
+    api.record.getByUserId.useQuery();
+
+  const { mutate: uploadRecord, isLoading: submittingRecord } =
+    api.record.create.useMutation({
+      onMutate: async (timing) => {
+        const newRecord: Record = {
+          id: "holder",
+          userId: "holder",
+          milliseconds: timing.milliseconds,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+        await utils.record.getAll.cancel();
+        const prevData = utils.record.getAll.getData();
+        utils.record.getByUserId.setData(undefined, (old) => {
+          console.log(old);
+          if (old === undefined) {
+            return [newRecord];
+          }
+          return [newRecord, ...old];
+        });
+        return { prevData };
+      },
+      onError: () => {
+        utils.record.getByUserId.setData(
+          undefined,
+          utils.record.getAll.getData()
+        );
+      },
+      onSettled: async () => {
+        await utils.record.getByUserId.invalidate();
+      },
+    });
 
   useEffect(() => {
     let interval: string | number | NodeJS.Timeout | undefined;
@@ -168,12 +203,10 @@ const Best = () => {
     return () => clearInterval(interval);
   }, [isRunning]);
 
-  const timerToggleHandler = async () => {
+  const timerToggleHandler = () => {
     setIsRunning((prev) => !prev);
     if (isRunning && time > 0) {
-      console.log("hi");
-      void (await uploadRecord({ milliseconds: time }));
-      void (await reloadRecord());
+      void uploadRecord({ milliseconds: time });
     } else {
       setTime(0);
     }
@@ -183,22 +216,10 @@ const Best = () => {
       <BestTimer
         timeInMs={time}
         isRunning={isRunning}
-        loading={
-          loadingRecords ||
-          (refetchingRecords && !isRunning) ||
-          submittingRecord
-        }
+        loading={submittingRecord}
         toggleTimerHandler={timerToggleHandler}
       />
-
-      <PastRecords
-        records={records}
-        loading={
-          loadingRecords ||
-          (refetchingRecords && !isRunning) ||
-          submittingRecord
-        }
-      />
+      <PastRecords records={records} loading={loadingRecords} />
     </>
   );
 };
