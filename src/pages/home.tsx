@@ -1,7 +1,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { type FC, type PropsWithChildren, useState, useEffect } from "react";
-import Best from "~/components/tabs/Best";
+import Best from "~/components/tabs/Best/Best";
 import NavBar from "~/components/ui/NavBar";
 
 const INITIAL_PAGE = 1;

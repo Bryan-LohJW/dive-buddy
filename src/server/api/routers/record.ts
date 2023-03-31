@@ -10,7 +10,6 @@ export const recordRouter = createTRPCRouter({
     return ctx.prisma.record.findMany();
   }),
   getByUserId: protectedProcedure.query(({ ctx }) => {
-    console.log(ctx.session.user);
     return ctx.prisma.record.findMany({
       where: { userId: ctx.session.user.id },
       orderBy: { createdAt: "desc" },
