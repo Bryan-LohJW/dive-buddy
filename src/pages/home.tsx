@@ -1,8 +1,9 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { type FC, type PropsWithChildren, useState, useEffect } from "react";
-import Best from "~/components/tabs/Best/Best";
 import NavBar from "~/components/ui/NavBar";
+import Training from "~/components/tabs/Training";
+import Best from "~/components/tabs/Best/Best";
 
 const INITIAL_PAGE = 1;
 
@@ -52,7 +53,7 @@ const Home = () => {
         <Best />
       </PageContent>
       <PageContent index={1} page={page}>
-        <p>Training</p>
+        <Training />
       </PageContent>
       <PageContent index={2} page={page}>
         <p>History</p>
