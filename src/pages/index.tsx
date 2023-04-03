@@ -3,11 +3,21 @@ import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
-
 import Appbar from "~/components/Appbar";
+import { useEffect } from "react";
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
+
+  const { status: sessionStatus } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (sessionStatus !== "authenticated" && sessionStatus !== "loading") {
+      void router.push("/auth");
+    }
+    if (sessionStatus === "authenticated") void router.push("/home");
+  }, [sessionStatus, router]);
 
   return (
     <>

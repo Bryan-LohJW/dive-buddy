@@ -15,6 +15,9 @@ export const recordRouter = createTRPCRouter({
       orderBy: { createdAt: "desc" },
     });
   }),
+  getLatest: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.record.findFirst();
+  }),
   create: protectedProcedure
     .input(z.object({ milliseconds: z.number() }))
     .mutation(async ({ ctx, input }) => {
