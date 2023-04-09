@@ -1,6 +1,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { type FC, type PropsWithChildren, useState, useEffect } from "react";
+
 import NavBar from "~/components/ui/NavBar";
 import Trainings from "~/components/tabs/Training/Trainings";
 import Best from "~/components/tabs/Best/Best";

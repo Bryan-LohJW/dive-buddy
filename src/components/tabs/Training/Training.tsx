@@ -3,13 +3,13 @@ import { formatTimeInMs } from "~/utils/timerFunctions";
 import CountDown from "./CountDown";
 import { TrainingType } from "@prisma/client";
 import { api } from "~/utils/api";
+import { TbPlaystationX } from "react-icons/tb";
 
 type TrainingProps = {
   title: string;
   description?: string;
   trainingType: TrainingType;
   record: number;
-  hasFirstVentilate: boolean;
 };
 
 const trainingTypeEnum = TrainingType;
@@ -19,12 +19,10 @@ const Training = ({
   description,
   trainingType,
   record,
-  hasFirstVentilate,
 }: TrainingProps) => {
   const [isFull, setIsFull] = useState(false);
   const [setsTime, setSetsTime] = useState<number[]>([0]);
   const [totalTime, setTotalTime] = useState(0);
-
   const { mutate: uploadTraining } = api.training.create.useMutation();
 
   useEffect(() => {
@@ -53,13 +51,9 @@ const Training = ({
       }
     }
 
-    if (!hasFirstVentilate) {
-      const firstVentilate = sets.shift();
-      time -= firstVentilate ? firstVentilate : 0;
-    }
     setTotalTime(time);
     setSetsTime(sets);
-  }, [hasFirstVentilate, record, trainingType]);
+  }, [record, trainingType]);
 
   const [minutes, seconds] = formatTimeInMs(totalTime);
 
@@ -68,11 +62,10 @@ const Training = ({
     <>
       <div className="h-6 w-full"></div>
       <div
-        // todo: fix the expansion to the right to make it symmetrical
-        className={`flex flex-col bg-cover bg-center ${
+        className={` box-border bg-cover bg-center ${
           isFull
-            ? "fixed z-10 h-full w-full overflow-scroll px-5 py-10"
-            : "mx-10 h-52  overflow-hidden rounded-lg border-2 border-black "
+            ? "absolute top-0 bottom-0 left-0 right-0 z-10 overflow-scroll px-5"
+            : "mx-10 flex h-52 flex-col overflow-hidden rounded-lg  shadow-xl"
         }  ${
           trainingType === TrainingType.O2
             ? "bg-O2-training"
@@ -82,31 +75,34 @@ const Training = ({
       >
         {isFull && (
           <button
-            className="absolute left-3/4 top-0"
+            className="absolute right-1 top-1"
             onClick={(e) => {
               e.stopPropagation();
               setIsFull(() => false);
             }}
           >
-            Close
+            <TbPlaystationX className="text-3xl text-secondary" />
           </button>
         )}
         <div className={`${isFull ? "h-0" : "flex-1"} ${transition}`}></div>
         <div
-          className={`flex-1 border-2 border-blue-500 bg-black text-white ${
-            isFull ? "opacity-80" : " opacity-60"
+          className={`h-fit flex-1 bg-black text-white ${
+            isFull
+              ? "absolute left-5 right-5 top-1/2 -translate-y-1/2 rounded-xl bg-opacity-80 py-5"
+              : "bg-opacity-70"
           } ${transition}`}
         >
-          {/* todo: transition to center smoothly */}
           <div
-            className={`w-fit ${
+            className={`w-fit flex-shrink-0 ${
               isFull ? "mx-auto text-center" : ""
             } ${transition}`}
           >
-            <h3 className="text-xl">{title}</h3>
-            <p>
-              {minutes}mins {seconds}s
-            </p>
+            <div className="mb-5">
+              <h3 className={`${isFull ? "text-4xl" : "text-xl"}`}>{title}</h3>
+              <p className={`${isFull ? "text-xl" : "text-base"}`}>
+                Time - {minutes}:{seconds}
+              </p>
+            </div>
           </div>
           {isFull ? (
             <CountDown

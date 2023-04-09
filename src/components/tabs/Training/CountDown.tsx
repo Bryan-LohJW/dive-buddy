@@ -10,6 +10,9 @@ const CountDown = ({ setsTime, onComplete }: CountDownProps) => {
   const [rep, setRep] = useState(0);
   const [repTime, setRepTime] = useState<number>(0);
   const [isRunning, setIsRunning] = useState(false);
+  const [currentRep, setCurrentRep] = useState<"Ventilate" | "Hold">(
+    setsTime.length % 2 === 0 ? "Ventilate" : "Hold"
+  );
 
   useEffect(() => {
     if (setsTime[0]) {
@@ -29,11 +32,15 @@ const CountDown = ({ setsTime, onComplete }: CountDownProps) => {
             if (nextTime != undefined) {
               setRepTime(nextTime);
               setRep((prev) => prev + 1);
+              setCurrentRep((prev) =>
+                prev === "Ventilate" ? "Hold" : "Ventilate"
+              );
             }
           } else {
             setIsRunning(false);
             setRepTime(setsTime[0] != undefined ? setsTime[0] : 100);
             setRep(0);
+            setCurrentRep(setsTime.length % 2 === 0 ? "Ventilate" : "Hold");
             onComplete();
           }
         }
@@ -43,6 +50,14 @@ const CountDown = ({ setsTime, onComplete }: CountDownProps) => {
     }
     return () => clearInterval(interval);
   }, [isRunning, onComplete, rep, repTime, setsTime]);
+
+  const skipVentilateHandler = () => {
+    if (!isRunning) {
+      setRepTime(setsTime[(rep + 1) % 2] || 0);
+      setRep((prev) => (prev + 1) % 2);
+      setCurrentRep((rep + 1) % 2 === 0 ? "Ventilate" : "Hold");
+    }
+  };
 
   const toggleRunningHandler = () => {
     if (isRunning) {
@@ -56,23 +71,35 @@ const CountDown = ({ setsTime, onComplete }: CountDownProps) => {
     }
   };
 
-  const [minutes, seconds, milliseconds] = formatTimeInMs(repTime);
+  const [minutes, seconds] = formatTimeInMs(repTime);
   return (
-    <div className="flex w-full flex-col">
-      <p>
+    <div className="relative flex flex-col items-center justify-between">
+      <p className="text-2xl">
         Cycle {rep + 1} of {setsTime.length}
       </p>
-      <p>
-        {minutes}:{seconds}:{milliseconds}
+      <p className="text-2xl">{currentRep}</p>
+      <p className="my-10 text-7xl">
+        {minutes}:{seconds}
       </p>
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          toggleRunningHandler();
-        }}
-      >
-        {isRunning ? "Stop" : "Start"}
-      </button>
+      <div className="flex flex-col gap-5">
+        <button
+          className="h-10 w-36 rounded-md bg-primary text-xl"
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleRunningHandler();
+          }}
+        >
+          {isRunning ? "Stop" : "Start"}
+        </button>
+        {!isRunning && (
+          <button
+            className="h-10 w-36 rounded-md bg-primary"
+            onClick={skipVentilateHandler}
+          >
+            {rep % 2 === 0 ? "Skip Ventilate" : "Include Ventilate"}
+          </button>
+        )}
+      </div>
       <button
         onClick={() => {
           if (isRunning) {
