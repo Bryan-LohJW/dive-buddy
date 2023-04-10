@@ -7,25 +7,23 @@ const Trainings = () => {
 
   if (status === "loading") return <div>Loading</div>;
 
-  if (!recordData || status === "error") return <div>Error</div>;
+  if (status === "error") return <div>Error</div>;
 
   const typeEnums = TrainingType;
-
-  // Todo: handle case where no records yet
 
   return (
     <>
       <Training
         title={"CO2 Training"}
-        description={"Train your lung capacity"}
+        description={"Decreasing breathe times"}
         trainingType={typeEnums.CO2}
-        record={recordData?.milliseconds}
+        record={recordData ? recordData.milliseconds : 0}
       />
       <Training
         title={"O2 Training"}
-        description={"Train your lung capacity"}
+        description={"Increasing breath hold times"}
         trainingType={typeEnums.O2}
-        record={recordData?.milliseconds}
+        record={recordData ? recordData.milliseconds : 0}
       />
     </>
   );

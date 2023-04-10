@@ -71,6 +71,8 @@ const CountDown = ({ setsTime, onComplete }: CountDownProps) => {
     }
   };
 
+  const percentageOfRepDone = (repTime / (setsTime[rep] || 1)) * 100;
+
   const [minutes, seconds] = formatTimeInMs(repTime);
   return (
     <div className="relative flex flex-col items-center justify-between">
@@ -90,10 +92,10 @@ const CountDown = ({ setsTime, onComplete }: CountDownProps) => {
             d="M18 2.0845
               a 15.9155 15.9155 0 0 1 0 31.831
               a 15.9155 15.9155 0 0 1 0 -31.831"
-            stroke-dasharray={`1, 100`}
+            stroke-dasharray={`${percentageOfRepDone}, 100`}
             strokeLinecap="round"
             className={`"transition-all ease-linear" fill-none 
-                  stroke-primary stroke-2 duration-[1.1s]
+                  stroke-primary stroke-2
               `}
           />
         }

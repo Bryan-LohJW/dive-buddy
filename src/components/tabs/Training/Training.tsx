@@ -4,6 +4,7 @@ import CountDown from "./CountDown";
 import { TrainingType } from "@prisma/client";
 import { api } from "~/utils/api";
 import { TbPlaystationX } from "react-icons/tb";
+import { toast } from "react-hot-toast";
 
 type TrainingProps = {
   title: string;
@@ -23,9 +24,16 @@ const Training = ({
   const [isFull, setIsFull] = useState(false);
   const [setsTime, setSetsTime] = useState<number[]>([0]);
   const [totalTime, setTotalTime] = useState(0);
+  const [hasRecord, setHasRecord] = useState(false);
+
   const { mutate: uploadTraining } = api.training.create.useMutation();
 
   useEffect(() => {
+    setHasRecord(record !== 0);
+  }, [record]);
+
+  useEffect(() => {
+    if (!hasRecord) return;
     const sets = [];
     let time = 0;
     if (trainingType === trainingTypeEnum.O2) {
@@ -50,10 +58,17 @@ const Training = ({
         ventilateTime -= 1000 * 15;
       }
     }
-
     setTotalTime(time);
     setSetsTime(sets);
-  }, [record, trainingType]);
+  }, [record, trainingType, hasRecord]);
+
+  const onClickHandler = () => {
+    if (hasRecord) {
+      setIsFull(true);
+    } else {
+      toast("Log a record to start training", { position: "top-center" });
+    }
+  };
 
   const [minutes, seconds] = formatTimeInMs(totalTime);
 
@@ -71,7 +86,7 @@ const Training = ({
             ? "bg-O2-training"
             : " bg-CO2-training"
         } ${transition}`}
-        onClick={() => setIsFull(() => true)}
+        onClick={onClickHandler}
       >
         {isFull && (
           <button
@@ -89,7 +104,7 @@ const Training = ({
           className={`h-fit flex-1 bg-black text-white ${
             isFull
               ? "absolute left-5 right-5 top-1/2 -translate-y-1/2 rounded-xl bg-opacity-80 py-5"
-              : "bg-opacity-70"
+              : "bg-opacity-70 px-3"
           } ${transition}`}
         >
           <div
@@ -99,9 +114,16 @@ const Training = ({
           >
             <div className="mb-5">
               <h3 className={`${isFull ? "text-4xl" : "text-xl"}`}>{title}</h3>
-              <p className={`${isFull ? "text-xl" : "text-base"}`}>
-                Time - {minutes}:{seconds}
-              </p>
+              {hasRecord && (
+                <p className={`${isFull ? "text-xl" : "text-base"}`}>
+                  Time - {minutes}:{seconds}
+                </p>
+              )}
+              {!hasRecord && (
+                <p className={`${isFull ? "text-xl" : "text-base"}`}>
+                  Log a record to start training
+                </p>
+              )}
             </div>
           </div>
           {isFull ? (
