@@ -83,7 +83,7 @@ const BestTimer: FC<BestTimerProps> = ({
             }}
           >
             {showProgress
-              ? `${minutes!}:${seconds!}:${milliseconds!}`
+              ? `${minutes || "00"}:${seconds || "00"}:${milliseconds || "00"}`
               : "-- : -- : --"}
           </text>
         </svg>

@@ -10,8 +10,8 @@ const CountDown = ({ setsTime, onComplete }: CountDownProps) => {
   const [rep, setRep] = useState(0);
   const [repTime, setRepTime] = useState<number>(0);
   const [isRunning, setIsRunning] = useState(false);
-  const [currentRep, setCurrentRep] = useState<"Ventilate" | "Hold">(
-    setsTime.length % 2 === 0 ? "Ventilate" : "Hold"
+  const [currentRep, setCurrentRep] = useState<"Breathe" | "Hold">(
+    setsTime.length % 2 === 0 ? "Breathe" : "Hold"
   );
 
   useEffect(() => {
@@ -33,14 +33,14 @@ const CountDown = ({ setsTime, onComplete }: CountDownProps) => {
               setRepTime(nextTime);
               setRep((prev) => prev + 1);
               setCurrentRep((prev) =>
-                prev === "Ventilate" ? "Hold" : "Ventilate"
+                prev === "Breathe" ? "Hold" : "Breathe"
               );
             }
           } else {
             setIsRunning(false);
             setRepTime(setsTime[0] != undefined ? setsTime[0] : 100);
             setRep(0);
-            setCurrentRep(setsTime.length % 2 === 0 ? "Ventilate" : "Hold");
+            setCurrentRep(setsTime.length % 2 === 0 ? "Breathe" : "Hold");
             onComplete();
           }
         }
@@ -51,11 +51,11 @@ const CountDown = ({ setsTime, onComplete }: CountDownProps) => {
     return () => clearInterval(interval);
   }, [isRunning, onComplete, rep, repTime, setsTime]);
 
-  const skipVentilateHandler = () => {
+  const skipBreatheHandler = () => {
     if (!isRunning) {
       setRepTime(setsTime[(rep + 1) % 2] || 0);
       setRep((prev) => (prev + 1) % 2);
-      setCurrentRep((rep + 1) % 2 === 0 ? "Ventilate" : "Hold");
+      setCurrentRep((rep + 1) % 2 === 0 ? "Breathe" : "Hold");
     }
   };
 
@@ -78,12 +78,37 @@ const CountDown = ({ setsTime, onComplete }: CountDownProps) => {
         Cycle {rep + 1} of {setsTime.length}
       </p>
       <p className="text-2xl">{currentRep}</p>
-      <p className="my-10 text-7xl">
-        {minutes}:{seconds}
-      </p>
+      <svg viewBox="0 0 36 36" className="my-5 h-full w-2/3">
+        <path
+          d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831"
+          className="fill-none stroke-gray-300 stroke-2"
+        />
+        {
+          <path
+            d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831"
+            stroke-dasharray={`1, 100`}
+            strokeLinecap="round"
+            className={`"transition-all ease-linear" fill-none 
+                  stroke-primary stroke-2 duration-[1.1s]
+              `}
+          />
+        }
+        <text
+          x={"7.25"}
+          y="20.75"
+          textAnchor="left"
+          className="fill-white text-[8px]"
+        >
+          {`${minutes || "00"}:${seconds || "00"}`}
+        </text>
+      </svg>
       <div className="flex flex-col gap-5">
         <button
-          className="h-10 w-36 rounded-md bg-primary text-xl"
+          className="h-10 w-40 rounded-md bg-primary text-xl"
           onClick={(e) => {
             e.stopPropagation();
             toggleRunningHandler();
@@ -93,10 +118,10 @@ const CountDown = ({ setsTime, onComplete }: CountDownProps) => {
         </button>
         {!isRunning && (
           <button
-            className="h-10 w-36 rounded-md bg-primary"
-            onClick={skipVentilateHandler}
+            className="h-10 w-40 rounded-md bg-secondary text-xl text-primary"
+            onClick={skipBreatheHandler}
           >
-            {rep % 2 === 0 ? "Skip Ventilate" : "Include Ventilate"}
+            {rep % 2 === 0 ? "Skip Breathe" : "Include Breathe"}
           </button>
         )}
       </div>

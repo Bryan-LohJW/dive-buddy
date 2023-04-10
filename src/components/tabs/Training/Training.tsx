@@ -81,7 +81,7 @@ const Training = ({
               setIsFull(() => false);
             }}
           >
-            <TbPlaystationX className="text-3xl text-secondary" />
+            <TbPlaystationX className="rounded-full bg-secondary text-3xl text-black" />
           </button>
         )}
         <div className={`${isFull ? "h-0" : "flex-1"} ${transition}`}></div>
