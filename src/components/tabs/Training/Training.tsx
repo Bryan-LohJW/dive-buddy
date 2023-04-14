@@ -5,6 +5,7 @@ import { TrainingType } from "@prisma/client";
 import { api } from "~/utils/api";
 import { TbPlaystationX } from "react-icons/tb";
 import { toast } from "react-hot-toast";
+import Complete from "./Complete";
 
 type TrainingProps = {
   title: string;
@@ -25,6 +26,7 @@ const Training = ({
   const [setsTime, setSetsTime] = useState<number[]>([0]);
   const [totalTime, setTotalTime] = useState(0);
   const [hasRecord, setHasRecord] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
 
   const { mutate: uploadTraining } = api.training.create.useMutation();
 
@@ -68,6 +70,14 @@ const Training = ({
     } else {
       toast("Log a record to start training", { position: "top-center" });
     }
+  };
+
+  const onTrainingComplete = () => {
+    setIsComplete(true);
+    uploadTraining({
+      type: trainingType,
+      referenceMilliseconds: record,
+    });
   };
 
   const [minutes, seconds] = formatTimeInMs(totalTime);
@@ -127,20 +137,19 @@ const Training = ({
             </div>
           </div>
           {isFull ? (
-            <CountDown
-              setsTime={setsTime}
-              onComplete={() => {
-                uploadTraining({
-                  type: trainingType,
-                  referenceMilliseconds: record,
-                });
-              }}
-            />
+            <CountDown setsTime={setsTime} onComplete={onTrainingComplete} />
           ) : (
             <p>{description}</p>
           )}
         </div>
       </div>
+      {isComplete && (
+        <Complete
+          onClose={() => {
+            setIsComplete(false);
+          }}
+        />
+      )}
     </>
   );
 };
