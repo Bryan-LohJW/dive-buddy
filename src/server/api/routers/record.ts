@@ -16,7 +16,7 @@ export const recordRouter = createTRPCRouter({
     });
   }),
   getLatest: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.record.findFirst();
+    return ctx.prisma.record.findFirst({ orderBy: { createdAt: "desc" } });
   }),
   create: protectedProcedure
     .input(z.object({ milliseconds: z.number() }))
