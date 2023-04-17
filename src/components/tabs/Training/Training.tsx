@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { formatTimeInMs } from "~/utils/timerFunctions";
 import CountDown from "./CountDown";
 import { TrainingType } from "@prisma/client";
@@ -7,6 +7,24 @@ import { TbPlaystationX } from "react-icons/tb";
 import { toast } from "react-hot-toast";
 import Complete from "./Complete";
 
+const trainingTypeEnum = TrainingType;
+
+type SpacerProps = {
+  height: string;
+};
+
+type CloseButtonProps = {
+  closeFunction: () => void;
+};
+
+type SetTimeProps = {
+  title: string;
+  titleStyle: string;
+  time: string;
+  timeStyle: string;
+  hasRecord: boolean;
+};
+
 type TrainingProps = {
   title: string;
   description?: string;
@@ -14,14 +32,48 @@ type TrainingProps = {
   record: number;
 };
 
-const trainingTypeEnum = TrainingType;
+const Spacer: FC<SpacerProps> = ({ height }) => {
+  return <div className={`${height} w-full`}></div>;
+};
 
-const Training = ({
+const CloseButton: FC<CloseButtonProps> = ({ closeFunction }) => {
+  return (
+    <button
+      className="absolute right-1 top-1"
+      onClick={(e) => {
+        e.stopPropagation();
+        closeFunction();
+      }}
+    >
+      <TbPlaystationX className="rounded-full bg-secondary text-3xl text-black" />
+    </button>
+  );
+};
+
+const SetTime: FC<SetTimeProps> = ({
+  title,
+  titleStyle,
+  time,
+  timeStyle,
+  hasRecord,
+}) => {
+  return (
+    <div className="mb-5">
+      <h3 className={`${titleStyle}`}>{title}</h3>
+      <p className={`${timeStyle}`}>
+        Time - {time}{" "}
+        {hasRecord ? `Time - ${time}` : `Log a record to start training`}
+      </p>
+    </div>
+  );
+};
+
+const Training: FC<TrainingProps> = ({
   title,
   description,
   trainingType,
   record,
-}: TrainingProps) => {
+}) => {
   const [isFull, setIsFull] = useState(false);
   const [setsTime, setSetsTime] = useState<number[]>([0]);
   const [totalTime, setTotalTime] = useState(0);
@@ -85,7 +137,7 @@ const Training = ({
   const transition = "transition-all duration-1000";
   return (
     <>
-      <div className="h-6 w-full"></div>
+      <Spacer height={"h-6"} />
       <div
         className={` box-border bg-cover bg-center ${
           isFull
@@ -99,17 +151,13 @@ const Training = ({
         onClick={onClickHandler}
       >
         {isFull && (
-          <button
-            className="absolute right-1 top-1"
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsFull(() => false);
+          <CloseButton
+            closeFunction={() => {
+              setIsFull(false);
             }}
-          >
-            <TbPlaystationX className="rounded-full bg-secondary text-3xl text-black" />
-          </button>
+          />
         )}
-        <div className={`${isFull ? "h-0" : "flex-1"} ${transition}`}></div>
+        <Spacer height={`${isFull ? "h-0" : "flex-1"} ${transition}`} />
         <div
           className={`h-fit flex-1 bg-black text-white ${
             isFull

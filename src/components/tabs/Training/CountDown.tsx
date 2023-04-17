@@ -120,10 +120,10 @@ const CountDown = ({ setsTime, onComplete }: CountDownProps) => {
         </button>
         {!isRunning && (
           <button
-            className="h-10 w-40 rounded-md bg-secondary text-xl text-primary"
+            className="h-20 w-40 rounded-md bg-secondary text-xl text-primary"
             onClick={skipBreatheHandler}
           >
-            {rep % 2 === 0 ? "Skip Breathe" : "Include Breathe"}
+            {rep % 2 === 0 ? "Already Breathing?" : "I Need To Breathe"}
           </button>
         )}
       </div>
