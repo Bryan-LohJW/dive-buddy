@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { type FC, useEffect, useState } from "react";
 import { formatTimeInMs } from "~/utils/timerFunctions";
 import CountDown from "./CountDown";
 import { TrainingType } from "@prisma/client";
@@ -142,7 +142,7 @@ const Training: FC<TrainingProps> = ({
         className={` box-border bg-cover bg-center ${
           isFull
             ? "absolute top-0 bottom-0 left-0 right-0 z-10 overflow-scroll px-5"
-            : "mx-10 flex h-52 flex-col overflow-hidden rounded-lg  shadow-xl"
+            : "mx-10 flex h-1/2 flex-col overflow-hidden rounded-lg  shadow-xl"
         }  ${
           trainingType === TrainingType.O2
             ? "bg-O2-training"

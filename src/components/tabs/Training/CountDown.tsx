@@ -127,15 +127,6 @@ const CountDown = ({ setsTime, onComplete }: CountDownProps) => {
           </button>
         )}
       </div>
-      <button
-        onClick={() => {
-          if (isRunning) {
-            setRepTime(100);
-          }
-        }}
-      >
-        PushTimeDown
-      </button>
     </div>
   );
 };
