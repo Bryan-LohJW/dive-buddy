@@ -26,6 +26,7 @@ const config = {
         float4: "float4 7s linear infinite",
         float5: "float5 10s linear infinite",
         float6: "float6 8s linear infinite",
+        shrink: "shrink 100ms ease-in-out",
       },
       keyframes: {
         float1: {
@@ -51,6 +52,10 @@ const config = {
         float6: {
           "0%": { transform: "translateY(0vh)" },
           "100%": { transform: "translate(30px, -100vh)", opacity: "0" },
+        },
+        shrink: {
+          "0%, 100%": { transform: "scale(1)" },
+          "50%": { transform: "scale(0.95)" },
         },
       },
     },

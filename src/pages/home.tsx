@@ -2,6 +2,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { type FC, type PropsWithChildren, useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import Best from "~/components/tabs/Best/Best";
 import NavBar from "~/components/ui/NavBar";
 
 const INITIAL_PAGE = 1;
@@ -18,7 +19,14 @@ const PageContent: FC<PropsWithChildren<PageContentProps>> = ({
 }) => {
   if (page !== index) return <></>;
 
-  return <main>{children}</main>;
+  return (
+    <main>
+      <div className="flex h-screen flex-col gap-5">
+        {children}
+        <div className="h-24 flex-shrink-0"></div>
+      </div>
+    </main>
+  );
 };
 
 const Home = () => {
@@ -43,7 +51,7 @@ const Home = () => {
   return (
     <>
       <PageContent index={0} page={page}>
-        <p>Best</p>
+        <Best />
       </PageContent>
       <PageContent index={1} page={page}>
         <p>Training</p>

@@ -1,8 +1,6 @@
 import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
-
 import googleSignIn from "/public/assets/btn_google_signin_light_normal_web@2x.png";
-
 import diveBuddyIcon from "/public/assets/dive-logo.png";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
