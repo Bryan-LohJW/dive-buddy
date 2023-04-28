@@ -15,7 +15,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <SkeletonTheme highlightColor="#B3B3B3" baseColor="	#E3E3E3">
+      <SkeletonTheme highlightColor="#B3B3B3" baseColor="#E3E3E3">
         <MyHead />
         <Toaster />
         <Component {...pageProps} />
