@@ -31,7 +31,6 @@ const Best = () => {
         await utils.record.getAll.cancel();
         const prevData = utils.record.getAll.getData();
         utils.record.getByUserId.setData(undefined, (old) => {
-          console.log(old);
           if (old === undefined) {
             return [newRecord];
           }
