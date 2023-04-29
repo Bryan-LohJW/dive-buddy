@@ -1,98 +1,63 @@
-import { type NextPage } from "next";
-import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
-import { api } from "~/utils/api";
-import { useRouter } from "next/router";
-import Appbar from "~/components/Appbar";
+import { signIn, useSession } from "next-auth/react";
+import Image from "next/image";
+import googleSignIn from "/public/assets/btn_google_signin_light_normal_web@2x.png";
+import diveBuddyIcon from "/public/assets/dive-logo.png";
 import { useEffect } from "react";
+import { useRouter } from "next/router";
+import toast from "react-hot-toast";
 
-const Home: NextPage = () => {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
-
-  const { status: sessionStatus } = useSession();
+const Auth = () => {
+  const { status } = useSession();
   const router = useRouter();
-
   useEffect(() => {
-    if (sessionStatus !== "authenticated" && sessionStatus !== "loading") {
-      void router.push("/auth");
+    if (status === "authenticated") {
+      void router.push("/home");
+      toast(`Logged in`, {
+        position: "top-center",
+      });
     }
-    if (sessionStatus === "authenticated") void router.push("/home");
-  }, [sessionStatus, router]);
+  }, [status, router]);
 
   return (
-    <>
-      <Appbar />
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-          <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-            Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
-          </h1>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-              href="https://create.t3.gg/en/usage/first-steps"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">First Steps →</h3>
-              <div className="text-lg">
-                Just the basics - Everything you need to know to set up your
-                database and authentication.
-              </div>
-            </Link>
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-              href="https://create.t3.gg/en/introduction"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">Documentation →</h3>
-              <div className="text-lg">
-                Learn more about Create T3 App, the libraries it uses, and how
-                to deploy it.
-              </div>
-            </Link>
-          </div>
-          <div className="flex flex-col items-center gap-2">
-            <p className="text-2xl text-white">
-              {hello.data ? hello.data.greeting : "Loading tRPC query..."}
-            </p>
-            <AuthShowcase />
-          </div>
+    <div className="absolute top-0 bottom-0 w-full flex-col overflow-y-hidden bg-secondary">
+      <div className={`relative h-[calc(100%-10rem)] p-5`}>
+        <h1 className="relative top-[20%] text-center text-4xl font-bold text-primary">
+          Dive Buddy
+        </h1>
+        <Image
+          alt="dive buddy"
+          src={diveBuddyIcon}
+          className="relative top-1/4 left-1/2 w-72 -translate-x-1/2"
+        />
+      </div>
+      <div className="relative z-10 flex h-[10rem] w-full flex-col justify-between rounded-t-3xl bg-primary py-5 px-10 text-secondary">
+        <div>
+          <h1 className="text-2xl font-bold">Welcome</h1>
+          <p className="">Please sign in to continue.</p>
         </div>
-      </main>
-    </>
-  );
-};
-
-export default Home;
-
-const AuthShowcase: React.FC = () => {
-  const { data: sessionData } = useSession();
-  const { data: secretMessage } = api.example.getSecretMessage.useQuery(
-    undefined, // no input
-    { enabled: sessionData?.user !== undefined }
-  );
-  const router = useRouter();
-
-  return (
-    <div className="flex flex-col items-center justify-center gap-4">
-      <p className="text-center text-2xl text-white">
-        {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
-        {secretMessage && <span> - {secretMessage}</span>}
-      </p>
-      <button
-        className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-        onClick={sessionData ? () => void signOut() : () => void signIn()}
-      >
-        {sessionData ? "Sign out" : "Sign in"}
-      </button>
-      <button
-        className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-        onClick={() => {
-          void router.push("/home");
-        }}
-      >
-        {sessionData ? "Home" : "Home without auth"}
-      </button>
+        <button
+          className="w-48"
+          onClick={() => {
+            void signIn("google", {
+              callbackUrl: "http://localhost:3000/home",
+            });
+          }}
+        >
+          <Image src={googleSignIn} alt="google icon" />
+        </button>
+      </div>
+      <div className="absolute bottom-0 left-0 right-0 z-0 flex justify-evenly">
+        <div className="h-8 w-8 animate-float1 rounded-full bg-primary delay-1000"></div>
+        <div className="h-10 w-10 animate-float2 rounded-full bg-primary delay-1000"></div>
+        <div className="h-12 w-12 animate-float3 rounded-full bg-primary delay-1000"></div>
+        <div className="h-6 w-6 animate-float4 rounded-full bg-primary delay-1000"></div>
+        <div className="h-10 w-10 animate-float5 rounded-full bg-primary delay-1000"></div>
+        <div className="h-13 w-13 animate-float6 rounded-full bg-primary delay-1000"></div>
+        <div className="h-10 w-10 animate-float1 rounded-full bg-primary delay-1000"></div>
+        <div className="h-15 w-15 animate-float2 rounded-full bg-primary delay-1000"></div>
+      </div>
     </div>
   );
 };
+
+export default Auth;

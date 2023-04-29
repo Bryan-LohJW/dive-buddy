@@ -1,6 +1,7 @@
 import { type FC, useEffect, useState } from "react";
 import "react-loading-skeleton/dist/skeleton.css";
 import { toast } from "react-hot-toast";
+import { passedNDays } from "~/utils/utils";
 import { formatTimeInMs } from "~/utils/timerFunctions";
 
 type BestTimerProps = {
@@ -27,10 +28,7 @@ const BestTimer: FC<BestTimerProps> = ({
         position: "top-center",
       });
     } else {
-      if (
-        new Date().valueOf() - Date.parse(lastVisit).valueOf() >
-        1000 * 60 * 60 * 24 * 5
-      ) {
+      if (passedNDays(5, lastVisit)) {
         toast("Tap the timer to hide it", {
           duration: 5000,
           position: "top-center",

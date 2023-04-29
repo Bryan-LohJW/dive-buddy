@@ -1,10 +1,10 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { type FC, type PropsWithChildren, useState, useEffect } from "react";
-
-import NavBar from "~/components/ui/NavBar";
-import Trainings from "~/components/tabs/Training/Trainings";
+import toast from "react-hot-toast";
 import Best from "~/components/tabs/Best/Best";
+import Trainings from "~/components/tabs/Training/Trainings";
+import NavBar from "~/components/ui/NavBar";
 
 const INITIAL_PAGE = 1;
 
@@ -32,14 +32,15 @@ const PageContent: FC<PropsWithChildren<PageContentProps>> = ({
 
 const Home = () => {
   const [page, setPage] = useState(INITIAL_PAGE);
-  const { status: sessionStatus } = useSession();
+  const { data: sessionData, status: isSessionLoading } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    if (sessionStatus !== "authenticated" && sessionStatus !== "loading") {
-      void router.push("/auth");
+    if (isSessionLoading !== "loading" && !sessionData) {
+      void router.push("/");
+      toast("Log in to continue", { position: "top-center" });
     }
-  }, [sessionStatus, router]);
+  }, [isSessionLoading, sessionData, router]);
 
   const pageHandler = (pageNo: number) => {
     if (page === pageNo) {
