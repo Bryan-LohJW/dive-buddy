@@ -26,23 +26,22 @@ const CountDown = ({ setsTime, onComplete }: CountDownProps) => {
     if (isRunning) {
       interval = setInterval(() => {
         setRepTime((prev) => prev - 10);
-        if (repTime < 0) {
-          if (rep + 1 < setsTime.length) {
-            const nextTime = setsTime[rep + 1];
-            if (nextTime != undefined) {
-              setRepTime(nextTime);
-              setRep((prev) => prev + 1);
-              setCurrentRep((prev) =>
-                prev === "Breathe" ? "Hold" : "Breathe"
-              );
-            }
-          } else {
-            setIsRunning(false);
-            setRepTime(setsTime[0] != undefined ? setsTime[0] : 100);
-            setRep(0);
-            setCurrentRep(setsTime.length % 2 === 0 ? "Breathe" : "Hold");
-            onComplete();
-          }
+        if (repTime > 0) {
+          return;
+        }
+        if (rep + 1 >= setsTime.length) {
+          setIsRunning(false);
+          setRepTime(setsTime[0] != undefined ? setsTime[0] : 100);
+          setRep(0);
+          setCurrentRep(setsTime.length % 2 === 0 ? "Breathe" : "Hold");
+          onComplete();
+          return;
+        }
+        const nextTime = setsTime[rep + 1];
+        if (nextTime != undefined) {
+          setRepTime(nextTime);
+          setRep((prev) => prev + 1);
+          setCurrentRep((prev) => (prev === "Breathe" ? "Hold" : "Breathe"));
         }
       }, 10);
     } else {
@@ -61,9 +60,11 @@ const CountDown = ({ setsTime, onComplete }: CountDownProps) => {
 
   const toggleRunningHandler = () => {
     if (isRunning) {
-      if (setsTime[0]) {
+      if (setsTime) {
         setRep(0);
-        setRepTime(setsTime[0]);
+        if (setsTime[0]) {
+          setRepTime(setsTime[0]);
+        }
         setIsRunning((prev) => !prev);
       }
     } else {

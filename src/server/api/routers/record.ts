@@ -6,9 +6,6 @@ import {
 } from "~/server/api/trpc";
 
 export const recordRouter = createTRPCRouter({
-  getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.record.findMany();
-  }),
   getByUserId: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.record.findMany({
       where: { userId: ctx.session.user.id },
@@ -16,7 +13,10 @@ export const recordRouter = createTRPCRouter({
     });
   }),
   getLatest: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.record.findFirst({ orderBy: { createdAt: "desc" } });
+    return ctx.prisma.record.findFirst({
+      where: { userId: ctx.session.user.id },
+      orderBy: { createdAt: "desc" },
+    });
   }),
   create: protectedProcedure
     .input(z.object({ milliseconds: z.number() }))
