@@ -12,3 +12,17 @@ export const formatDate = (date: Date) => {
   }
   return displayTime;
 };
+
+export const formatTimeInMs = (timeInMs: number) => {
+  const minutes = ("0" + Math.floor((timeInMs / 60000) % 60).toString()).slice(
+    -2
+  );
+  const seconds = ("0" + Math.floor((timeInMs / 1000) % 60).toString()).slice(
+    -2
+  );
+  const milliseconds = (
+    "0" + Math.floor((timeInMs / 10) % 100).toString()
+  ).slice(-2);
+
+  return [minutes, seconds, milliseconds];
+};

@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { type FC, type PropsWithChildren, useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import Best from "~/components/tabs/Best/Best";
+import Trainings from "~/components/tabs/Training/Trainings";
 import NavBar from "~/components/ui/NavBar";
 
 const INITIAL_PAGE = 1;
@@ -54,7 +55,7 @@ const Home = () => {
         <Best />
       </PageContent>
       <PageContent index={1} page={page}>
-        <p>Training</p>
+        <Trainings />
       </PageContent>
       <PageContent index={2} page={page}>
         <p>History</p>

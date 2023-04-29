@@ -33,6 +33,11 @@ const PastRecords: FC<PastRecordsProps> = ({ records, isLoading }) => {
           </div>
         </>
       )}
+      {records && records.length === 0 && (
+        <div className="flex justify-center border-b-2 border-black py-2 px-6">
+          <p className="text-lg">Log your first record</p>
+        </div>
+      )}
       {!isLoading &&
         records &&
         records.map((record) => {

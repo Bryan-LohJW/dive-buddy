@@ -2,6 +2,7 @@ import { type FC, useEffect, useState } from "react";
 import "react-loading-skeleton/dist/skeleton.css";
 import { toast } from "react-hot-toast";
 import { passedNDays } from "~/utils/utils";
+import { formatTimeInMs } from "~/utils/timerFunctions";
 
 type BestTimerProps = {
   timeInMs: number;
@@ -37,15 +38,7 @@ const BestTimer: FC<BestTimerProps> = ({
     localStorage.setItem("lastVisit", new Date().toString());
   }, []);
 
-  const minutes = ("0" + Math.floor((timeInMs / 60000) % 10).toString()).slice(
-    -2
-  );
-  const seconds = ("0" + Math.floor((timeInMs / 1000) % 60).toString()).slice(
-    -2
-  );
-  const milliseconds = (
-    "0" + Math.floor((timeInMs / 10) % 100).toString()
-  ).slice(-2);
+  const [minutes, seconds, milliseconds] = formatTimeInMs(timeInMs);
 
   const percentOfMin =
     (+Math.floor((timeInMs / 1000) % 60)
@@ -88,7 +81,7 @@ const BestTimer: FC<BestTimerProps> = ({
             }}
           >
             {showProgress
-              ? `${minutes}:${seconds}:${milliseconds}`
+              ? `${minutes || "00"}:${seconds || "00"}:${milliseconds || "00"}`
               : "-- : -- : --"}
           </text>
         </svg>

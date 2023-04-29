@@ -58,6 +58,10 @@ const config = {
           "50%": { transform: "scale(0.95)" },
         },
       },
+      backgroundImage: {
+        "CO2-training": "url('/co2-training.jpg')",
+        "O2-training": "url('/o2-training.jpg')",
+      },
     },
   },
   plugins: [],
